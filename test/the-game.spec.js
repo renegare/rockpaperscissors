@@ -4,7 +4,8 @@ const {
   PAPER,
   SCISSORS,
   USER,
-  COMPUTER
+  COMPUTER,
+  defaultOpts: { possibleOptions }
 } = require('../src/game')
 
 const { stub } = require('sinon')
@@ -25,20 +26,33 @@ describe('the game', () => {
     const { computerPlay, decideWinner } = stubs
     const play = stub().callsArgWith(0, PAPER)
     computerPlay.callsArgWith(0, ROCK)
+    decideWinner.returns(Promise.resolve(USER))
 
     const start = game()
     return start(play)
       .then(result => {
         // did both players play the correct amount of times
         expect(play.called).to.be.true
-        expect(stubs.computerPlay.called).to.be.true
-        expect(stubs.decideWinner.called).to.be.true
+        expect(computerPlay.called).to.be.true
 
-        expect(stubs.decideWinner.firstCall.args).to.eql([ PAPER, ROCK ])
-        // expect(stubs.decideWinner.firstCall).to.eql(3)
+        expect(decideWinner.called).to.be.true
+        expect(decideWinner.firstCall.args)
+          .to.eql([{
+            playCount: 0,
+            userScore: 0,
+            compScore: 0,
+            possibleOptions,
+            userChoice: PAPER,
+            compChoice: ROCK
+          }])
 
         // who won!
-        expect(result.winner).to.eql(USER)
+        expect(result).to.eql({
+          plays: 1,
+          userScore: 1,
+          compScore: 0,
+          winner: USER
+        })
       })
   })
 
