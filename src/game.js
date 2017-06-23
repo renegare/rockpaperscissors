@@ -34,6 +34,7 @@ export const game = (opts = {}) => {
   let userScore = 0
   let compScore = 0
   let plays = 0
+
   const computer = new Computer(possibleOptions)
 
   const play = (userPlay) => {
