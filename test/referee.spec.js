@@ -2,7 +2,8 @@ import Referee, {
   USER,
   COMPUTER,
   DrawError,
-  NoWinnerError
+  NoWinnerError,
+  InvalidChoiceError
 } from '../src/referee'
 
 const ROCK = 'ROCK'
@@ -37,8 +38,37 @@ describe('Referee', () => {
       const referee = new Referee({ choices })
 
       return referee.getPlayResult(SCISSORS, SCISSORS)
+      .then(() => {
+        throw new Error(`Not expecting a result`)
+      })
       .catch(err => {
         expect(err).instanceof(DrawError)
+      })
+    })
+
+    it('should reject play as a draw for invalid user choice', () => {
+      const referee = new Referee({ choices })
+
+      return referee.getPlayResult('INVALID', SCISSORS)
+      .then(args => {
+        console.log(args)
+        throw new Error(`Not expecting a result`)
+      })
+      .catch(err => {
+        expect(err).instanceof(InvalidChoiceError)
+      })
+    })
+
+    it('should reject play as a draw for invalid computer choice', () => {
+      const referee = new Referee({ choices })
+
+      return referee.getPlayResult(SCISSORS, 'INVALID')
+      .then(args => {
+        console.log(args)
+        throw new Error(`Not expecting a result`)
+      })
+      .catch(err => {
+        expect(err).instanceof(InvalidChoiceError)
       })
     })
   })

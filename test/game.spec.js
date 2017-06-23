@@ -142,12 +142,12 @@ describe('the game', () => {
       })
     })
 
-    it('should halt when referee check rejects with an error', () => {
+    it('should halt when referee getWinner rejects with an error', () => {
       const unexpectedError = new Error('Unexpected')
       const play = stub().callsArgWith(0, PAPER)
       computerPlay.callsArgWith(0, ROCK)
 
-      getPlayResult.returns(Promise.reject(unexpectedError))
+      getWinner.returns(Promise.reject(unexpectedError))
 
       const start = game()
       return start(play).catch(err => {

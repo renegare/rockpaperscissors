@@ -38,6 +38,7 @@ export default class Referee {
   /**
    * provide options for the referee of a game to decide with
    * @param {Object}  options
+   * @param {Array<Any>}   options.bestOutOf maximum number of games expected to play
    * @param {Array<Any>}   options.choices Array of possible values that a user or computer can play with. The order of the values are important. e.g [ROCK, PAPER, SCISSORS] where the chosen item can be defeated by the proceeding 'n' number of items. Basically: `n = floor(totalLengthOfChoices / 2)`. If not enough items are found after a given choice then the remaining required amount of items is taken from the start of the array.
    */
   constructor({ choices, bestOutOf=1 }) {
@@ -53,7 +54,7 @@ export default class Referee {
    * @return {Promise}
    * @resolve {string} one of the constants USER or COMPUTER
    * @rejects {DrawError} when both user and computer choices match
-   * @rejects !{InvalidChoiceError} when both user and computer choices match
+   * @rejects {InvalidChoiceError} when both user and computer choices match
    */
   getPlayResult(user, comp) {
     return new Promise((resolve, reject) => {
@@ -62,6 +63,9 @@ export default class Referee {
       const { choices, choiceCount } = this
       const userIdx = choices.indexOf(user)
       const compIdx = choices.indexOf(comp)
+
+      if (userIdx < 0) return reject(new InvalidChoiceError())
+      if (compIdx < 0) return reject(new InvalidChoiceError())
 
       const winners = new Array(Math.floor(choiceCount / 2))
         .fill('')
@@ -79,7 +83,9 @@ export default class Referee {
    * @param {string} plays number of games played
    * @param {number} user user's current score
    * @param {number} comp computer's current score
-   * @return {[type]} [description]
+   * @return {Promise}
+   * @resolve {string} one of the constants USER or COMPUTER as the winner
+   * @rejects {NoWinnerError} when either a tied match or one of the players has the best out of the match
    */
   getWinner(plays, user, comp) {
     return new Promise((resolve, reject) => {
