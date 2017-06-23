@@ -1,10 +1,16 @@
 const {
   game,
+
   ROCK,
   PAPER,
   SCISSORS,
+
   USER,
   COMPUTER,
+
+  NoOverallWinnerError,
+  DrawError,
+
   defaultOpts: { possibleOptions }
 } = require('../src/game')
 
@@ -64,45 +70,12 @@ describe('the game', () => {
       })
   })
 
-  it('should play again when there is a draw', () => {
+  it('should play again when there is no overall winner', () => {
     const { computerPlay, decideWinner } = stubs
     const play = stub().callsArgWith(0, PAPER)
     computerPlay.callsArgWith(0, ROCK)
-    decideWinner.onCall(0).returns(Promise.reject(new Error('Neither wins')))
-    decideWinner.onCall(1).returns(Promise.resolve(COMPUTER))
 
-    const start = game()
-    return start(play)
-      .then(result => {
-        expect(play.callCount).to.eql(2)
-        expect(computerPlay.callCount).to.eql(2)
-
-        expect(decideWinner.callCount).to.eql(2)
-        expect(decideWinner.secondCall.args)
-          .to.eql([{
-            compChoice: ROCK,
-            compScore: 1,
-            plays: 2,
-            possibleOptions,
-            userChoice: PAPER,
-            userScore: 1,
-          }])
-
-        expect(result).to.eql({
-          plays: 2,
-          compScore: 2,
-          userScore: 1,
-          winner: COMPUTER
-        })
-      })
-  })
-
-  it.only('should play again when there is no overall winner', () => {
-    const { computerPlay, decideWinner } = stubs
-    const play = stub().callsArgWith(0, PAPER)
-    computerPlay.callsArgWith(0, ROCK)
-    const err = new Error('No Overall Winner')
-    err.winner = USER
+    const err = new NoOverallWinnerError(USER)
     decideWinner.onCall(0).returns(Promise.reject(err))
     decideWinner.onCall(1).returns(Promise.resolve(USER))
 
@@ -132,4 +105,38 @@ describe('the game', () => {
       })
   })
 
+  it('should play again when there is a draw', () => {
+    const { computerPlay, decideWinner } = stubs
+    const play = stub().callsArgWith(0, PAPER)
+    computerPlay.callsArgWith(0, ROCK)
+
+    const err = new DrawError()
+    decideWinner.onCall(0).returns(Promise.reject(err))
+    decideWinner.onCall(1).returns(Promise.resolve(COMPUTER))
+
+    const start = game()
+    return start(play)
+      .then(result => {
+        expect(play.callCount).to.eql(2)
+        expect(computerPlay.callCount).to.eql(2)
+
+        expect(decideWinner.callCount).to.eql(2)
+        expect(decideWinner.secondCall.args)
+          .to.eql([{
+            compChoice: ROCK,
+            compScore: 1,
+            plays: 2,
+            possibleOptions,
+            userChoice: PAPER,
+            userScore: 1,
+          }])
+
+        expect(result).to.eql({
+          plays: 2,
+          compScore: 2,
+          userScore: 1,
+          winner: COMPUTER
+        })
+      })
+  })
 })

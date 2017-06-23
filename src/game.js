@@ -1,3 +1,5 @@
+import ExtendableError from 'es6-error';
+
 const Computer = require('./computer')
 const Referee = require('./referee')
 const ROCK = 'ROCK'
@@ -10,6 +12,19 @@ const noop = () => {}
 
 const defaultOpts = {
   possibleOptions: [ ROCK, PAPER, SCISSORS ]
+}
+
+class NoOverallWinnerError extends ExtendableError {
+  constructor(winner, message='NoOverall Winner Error') {
+    super(message)
+    this.winner = winner
+  }
+}
+
+class DrawError extends ExtendableError {
+  constructor(message='Draw Error') {
+    super(message)
+  }
 }
 
 const game = (opts = {}) => {
@@ -47,15 +62,22 @@ const game = (opts = {}) => {
           })
         })
         .catch(err => {
-          if (err.winner === USER)
-            ++userScore
-          else
-            ++compScore
-          play(userPlay).then(resolve, reject)
-          // only expected error case is a Draw
-          // ++userScore
-          // ++compScore
-          // play(userPlay).then(resolve, reject)
+          switch(err.constructor) {
+            case NoOverallWinnerError:
+              if (err.winner === USER)
+                ++userScore
+              else
+                ++compScore
+              return play(userPlay).then(resolve, reject)
+
+            case DrawError:
+              ++userScore
+              ++compScore
+              return play(userPlay).then(resolve, reject)
+          }
+
+          console.log('WTF', err)
+          throw new Error('WTH')
         })
 
         // catch error
@@ -72,10 +94,16 @@ const game = (opts = {}) => {
 
 module.exports = {
   defaultOpts,
+
   game,
+
   ROCK,
   PAPER,
   SCISSORS,
+
   COMPUTER,
-  USER
+  USER,
+
+  NoOverallWinnerError,
+  DrawError,
 }
