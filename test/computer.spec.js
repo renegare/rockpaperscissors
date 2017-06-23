@@ -20,7 +20,7 @@ describe('the computer', () => {
     floor.restore()
   })
 
-  it.only('should return a random choice', done => {
+  it('should return a random choice', done => {
     const possibleOptions = [ 1, 2, 3 ]
     const computer = new Computer(possibleOptions)
 

@@ -1,33 +1,32 @@
 import ExtendableError from 'es6-error';
 
-const Computer = require('./computer')
-const Referee = require('./referee')
-const ROCK = 'ROCK'
-const PAPER = 'PAPER'
-const SCISSORS = 'SCISSORS'
-const COMPUTER = 'COMPUTER'
-const USER = 'USER'
+import Computer from './computer'
+import Referee from './referee'
 
-const noop = () => {}
+export const ROCK = 'ROCK'
+export const PAPER = 'PAPER'
+export const SCISSORS = 'SCISSORS'
+export const COMPUTER = 'COMPUTER'
+export const USER = 'USER'
 
-const defaultOpts = {
+export const defaultOpts = {
   possibleOptions: [ ROCK, PAPER, SCISSORS ]
 }
 
-class NoOverallWinnerError extends ExtendableError {
+export class NoOverallWinnerError extends ExtendableError {
   constructor(winner, message='NoOverall Winner Error') {
     super(message)
     this.winner = winner
   }
 }
 
-class DrawError extends ExtendableError {
+export class DrawError extends ExtendableError {
   constructor(message='Draw Error') {
     super(message)
   }
 }
 
-const game = (opts = {}) => {
+export const game = (opts = {}) => {
   const {
     possibleOptions
   } = { ...defaultOpts, ...opts }
@@ -35,11 +34,12 @@ const game = (opts = {}) => {
   let userScore = 0
   let compScore = 0
   let plays = 0
+  const computer = new Computer(possibleOptions)
 
   const play = (userPlay) => {
     ++plays
     return new Promise((resolve, reject) => {
-      userPlay(userChoice => Computer.play(compChoice => {
+      userPlay(userChoice => computer.play(compChoice => {
         Referee.decideWinner({
           plays,
           possibleOptions,
@@ -87,20 +87,4 @@ const game = (opts = {}) => {
   }
 
   return play
-}
-
-module.exports = {
-  defaultOpts,
-
-  game,
-
-  ROCK,
-  PAPER,
-  SCISSORS,
-
-  COMPUTER,
-  USER,
-
-  NoOverallWinnerError,
-  DrawError,
 }

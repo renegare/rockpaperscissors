@@ -1,4 +1,7 @@
-const {
+import { stub } from 'sinon'
+import Computer from '../src/computer'
+import Referee from '../src/referee'
+import {
   game,
 
   ROCK,
@@ -11,19 +14,17 @@ const {
   NoOverallWinnerError,
   DrawError,
 
-  defaultOpts: { possibleOptions }
-} = require('../src/game')
+  defaultOpts
+} from '../src/game'
 
-const { stub } = require('sinon')
-const Computer = require('../src/computer')
-const Referee = require('../src/referee')
+const { possibleOptions } = defaultOpts
 
 describe('the game', () => {
   let stubs
 
   before(() => {
     stubs = {
-      computerPlay: stub(Computer, 'play'),
+      computerPlay: stub(Computer.prototype, 'play'),
       decideWinner: stub(Referee, 'decideWinner')
     }
   })
