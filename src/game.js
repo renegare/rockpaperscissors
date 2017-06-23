@@ -19,13 +19,14 @@ const game = (opts = {}) => {
 
   let userScore = 0
   let compScore = 0
+  let plays = 0
 
-  return (play) => {
-    const playCount = 0
-    return new Promise(resolve => {
-      play(userChoice => Computer.play(compChoice => {
+  const play = (userPlay) => {
+    ++plays
+    return new Promise((resolve, reject) => {
+      userPlay(userChoice => Computer.play(compChoice => {
         Referee.decideWinner({
-          playCount,
+          plays,
           possibleOptions,
           userScore,
           compScore,
@@ -33,23 +34,35 @@ const game = (opts = {}) => {
           compChoice
         })
         .then(winner => {
-          if(winner)
+          if(winner === USER)
             ++userScore
           else
             ++compScore
 
-          resolve({ plays: 1, userScore, compScore, winner })
+          resolve({
+            plays,
+            userScore,
+            compScore,
+            winner
+          })
+        })
+        .catch(err => {
+          // only expected error case is a Draw
+          ++userScore
+          ++compScore
+          play(userPlay).then(resolve, reject)
         })
 
         // catch error
-        //  > Draw error
         //  > No Overall Winner error
+        //  > Draw error
         //  > Unexpected error
-        //  > call start again but with playCount? incremented
       }))
 
     })
   }
+
+  return play
 }
 
 module.exports = {

@@ -22,7 +22,17 @@ describe('the game', () => {
     }
   })
 
-  it('should play a game of <any number> of rounds', () => {
+  beforeEach(() => {
+    stubs.computerPlay.reset()
+    stubs.decideWinner.reset()
+  })
+
+  after(() => {
+    stubs.computerPlay.restore()
+    stubs.decideWinner.restore()
+  })
+
+  it('should play', () => {
     const { computerPlay, decideWinner } = stubs
     const play = stub().callsArgWith(0, PAPER)
     computerPlay.callsArgWith(0, ROCK)
@@ -31,14 +41,13 @@ describe('the game', () => {
     const start = game()
     return start(play)
       .then(result => {
-        // did both players play the correct amount of times
         expect(play.called).to.be.true
         expect(computerPlay.called).to.be.true
 
         expect(decideWinner.called).to.be.true
         expect(decideWinner.firstCall.args)
           .to.eql([{
-            playCount: 0,
+            plays: 1,
             userScore: 0,
             compScore: 0,
             possibleOptions,
@@ -46,7 +55,6 @@ describe('the game', () => {
             compChoice: ROCK
           }])
 
-        // who won!
         expect(result).to.eql({
           plays: 1,
           userScore: 1,
@@ -56,6 +64,70 @@ describe('the game', () => {
       })
   })
 
-  // it('should ')
+  it('should play again when there is a draw', () => {
+    const { computerPlay, decideWinner } = stubs
+    const play = stub().callsArgWith(0, PAPER)
+    computerPlay.callsArgWith(0, ROCK)
+    decideWinner.onCall(0).returns(Promise.reject(new Error('Neither wins')))
+    decideWinner.onCall(1).returns(Promise.resolve(COMPUTER))
+
+    const start = game()
+    return start(play)
+      .then(result => {
+        expect(play.callCount).to.eql(2)
+        expect(computerPlay.callCount).to.eql(2)
+
+        expect(decideWinner.callCount).to.eql(2)
+        expect(decideWinner.secondCall.args)
+          .to.eql([{
+            compChoice: ROCK,
+            compScore: 1,
+            plays: 2,
+            possibleOptions,
+            userChoice: PAPER,
+            userScore: 1,
+          }])
+
+        expect(result).to.eql({
+          plays: 2,
+          userScore: 1,
+          compScore: 2,
+          winner: COMPUTER
+        })
+      })
+  })
+
+  xit('should play again when there is no overall winner', () => {
+    const { computerPlay, decideWinner } = stubs
+    const play = stub().callsArgWith(0, PAPER)
+    computerPlay.callsArgWith(0, ROCK)
+    decideWinner.onCall(0).returns(Promise.reject(new Error('No Overall Winner')))
+    decideWinner.onCall(1).returns(Promise.resolve(COMPUTER))
+
+    const start = game()
+    return start(play)
+      .then(result => {
+        expect(play.callCount).to.eql(2)
+        expect(computerPlay.callCount).to.eql(2)
+
+        expect(decideWinner.callCount).to.eql(2)
+        expect(decideWinner.secondCall.args)
+          .to.eql([{
+            compChoice: ROCK,
+            compScore: 1,
+            plays: 2,
+            possibleOptions,
+            userChoice: PAPER,
+            userScore: 1,
+          }])
+
+        expect(result).to.eql({
+          plays: 2,
+          userScore: 1,
+          compScore: 2,
+          winner: COMPUTER
+        })
+      })
+  })
 
 })
