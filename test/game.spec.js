@@ -19,7 +19,7 @@ import {
 
 const { possibleOptions } = defaultOpts
 
-describe.only('the game', () => {
+describe('the game', () => {
   let computerPlay
   let getPlayResult
   let getWinner
