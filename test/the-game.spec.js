@@ -191,5 +191,29 @@ describe('the game', () => {
         expect(err).to.eql(unexpectedError)
       })
     })
+
+    it('should proceed with game after a halt', () => {
+      const { computerPlay, decideWinner } = stubs
+      const unexpectedError = new Error('Unexpected')
+      const play = stub().callsArgWith(0, PAPER)
+      computerPlay.callsArgWith(0, ROCK)
+
+      decideWinner.returns(Promise.reject(unexpectedError))
+
+      const start = game()
+      return start(play).catch(err => {
+        decideWinner.reset()
+        decideWinner.returns(Promise.resolve(USER))
+
+        return start(play).then(result => {
+          expect(result).to.eql({
+            plays: 2,
+            userScore: 1,
+            compScore: 0,
+            winner: USER
+          })
+        })
+      })
+    })
   })
 })
