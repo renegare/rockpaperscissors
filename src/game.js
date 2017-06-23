@@ -47,10 +47,15 @@ const game = (opts = {}) => {
           })
         })
         .catch(err => {
-          // only expected error case is a Draw
-          ++userScore
-          ++compScore
+          if (err.winner === USER)
+            ++userScore
+          else
+            ++compScore
           play(userPlay).then(resolve, reject)
+          // only expected error case is a Draw
+          // ++userScore
+          // ++compScore
+          // play(userPlay).then(resolve, reject)
         })
 
         // catch error

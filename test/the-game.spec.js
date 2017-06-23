@@ -90,19 +90,21 @@ describe('the game', () => {
 
         expect(result).to.eql({
           plays: 2,
-          userScore: 1,
           compScore: 2,
+          userScore: 1,
           winner: COMPUTER
         })
       })
   })
 
-  xit('should play again when there is no overall winner', () => {
+  it.only('should play again when there is no overall winner', () => {
     const { computerPlay, decideWinner } = stubs
     const play = stub().callsArgWith(0, PAPER)
     computerPlay.callsArgWith(0, ROCK)
-    decideWinner.onCall(0).returns(Promise.reject(new Error('No Overall Winner')))
-    decideWinner.onCall(1).returns(Promise.resolve(COMPUTER))
+    const err = new Error('No Overall Winner')
+    err.winner = USER
+    decideWinner.onCall(0).returns(Promise.reject(err))
+    decideWinner.onCall(1).returns(Promise.resolve(USER))
 
     const start = game()
     return start(play)
@@ -114,7 +116,7 @@ describe('the game', () => {
         expect(decideWinner.secondCall.args)
           .to.eql([{
             compChoice: ROCK,
-            compScore: 1,
+            compScore: 0,
             plays: 2,
             possibleOptions,
             userChoice: PAPER,
@@ -123,9 +125,9 @@ describe('the game', () => {
 
         expect(result).to.eql({
           plays: 2,
-          userScore: 1,
-          compScore: 2,
-          winner: COMPUTER
+          compScore: 0,
+          userScore: 2,
+          winner: USER
         })
       })
   })
