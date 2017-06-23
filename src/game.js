@@ -1,11 +1,9 @@
-import ExtendableError from 'es6-error';
-
 import Computer from './computer'
 import Referee, {
   USER,
   COMPUTER,
   DrawError,
-  InvalidChoiceError,
+  NoWinnerError,
 } from './referee'
 
 export const ROCK = 'ROCK'
@@ -15,18 +13,13 @@ export const SCISSORS = 'SCISSORS'
 export {
   COMPUTER,
   USER,
-  DrawError
+  DrawError,
+  InvalidChoiceError,
+  NoWinnerError,
 } from './referee'
 
 export const defaultOpts = {
   possibleOptions: [ ROCK, PAPER, SCISSORS ]
-}
-
-export class NoWinnerError extends ExtendableError {
-  constructor(winner, message='NoOverall Winner Error') {
-    super(message)
-    this.winner = winner
-  }
 }
 
 export const game = (opts = {}) => {

@@ -6,18 +6,13 @@ import {
 
   ROCK,
   PAPER,
-  SCISSORS,
 
   USER,
   COMPUTER,
 
   NoWinnerError,
   DrawError,
-
-  defaultOpts
 } from '../src/game'
-
-const { possibleOptions } = defaultOpts
 
 describe('the game', () => {
   let computerPlay
@@ -164,6 +159,7 @@ describe('the game', () => {
 
       const start = game()
       return start(play).catch(err => {
+        expect(err).to.eql(unexpectedError)
         expect(getPlayResult.calledOnce).to.be.true
         expect(getPlayResult.firstCall.args).to.eql([PAPER, ROCK])
 
