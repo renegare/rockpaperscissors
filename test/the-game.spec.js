@@ -9,6 +9,7 @@ const {
 
 const { stub } = require('sinon')
 const Computer = require('../src/computer')
+const Referee = require('../src/referee')
 
 describe('the game', () => {
   let stubs
@@ -16,30 +17,31 @@ describe('the game', () => {
   before(() => {
     stubs = {
       computerPlay: stub(Computer, 'play'),
+      decideWinner: stub(Referee, 'decideWinner')
     }
   })
 
   it('should play a game of <any number> of rounds', () => {
-    const computerPlays = [ ROCK, PAPER, SCISSORS ]
-    const userPlays = [ ROCK, ROCK, PAPER ]
-    const expectedPlays = 3
-    const expectedWinner = COMPUTER
-    const bestOutof = 3
+    const { computerPlay, decideWinner } = stubs
+    const play = stub().callsArgWith(0, PAPER)
+    computerPlay.callsArgWith(0, ROCK)
 
-    const start = game({ bestOutof })
-
-    const play = stub().callsFake(play => play(userPlays.shift()))
-    stubs.computerPlay.callsFake(play => play(computerPlays.shift()))
-
+    const start = game()
     return start(play)
       .then(result => {
         // did both players play the correct amount of times
-        expect(play.callCount).to.eql(expectedPlays)
-        expect(stubs.computerPlay.callCount).to.eql(expectedPlays)
+        expect(play.called).to.be.true
+        expect(stubs.computerPlay.called).to.be.true
+        expect(stubs.decideWinner.called).to.be.true
+
+        expect(stubs.decideWinner.firstCall.args).to.eql([ PAPER, ROCK ])
+        // expect(stubs.decideWinner.firstCall).to.eql(3)
 
         // who won!
         expect(result.winner).to.eql(USER)
       })
   })
+
+  // it('should ')
 
 })

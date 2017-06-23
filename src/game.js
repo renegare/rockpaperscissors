@@ -8,9 +8,15 @@ const USER = 'USER'
 
 const noop = () => {}
 
-const game = ({
-  possibleOptions = [ ROCK, PAPER, SCISSORS ]
-}) => {
+const defaultOpts = {
+  possibleOptions: [ ROCK, PAPER, SCISSORS ]
+}
+
+const game = (opts = {}) => {
+  const {
+    possibleOptions
+  } = { ...defaultOpts, ...opts }
+
   const score = {
     user: 0,
     comp: 0
@@ -18,10 +24,10 @@ const game = ({
 
   return (play) => {
     return new Promise(resolve => {
-      play(noop); play(noop); play(noop);
-      Computer.play(noop); Computer.play(noop); Computer.play(noop);
-
-      return resolve({ winner: USER })
+      play(userChoice => Computer.play(compChoice => {
+        Referee.decideWinner(userChoice, compChoice)
+        resolve({ winner: USER })
+      }))
     })
   }
 }
