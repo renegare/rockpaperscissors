@@ -68,22 +68,19 @@ const game = (opts = {}) => {
                 ++userScore
               else
                 ++compScore
-              return play(userPlay).then(resolve, reject)
+              break
 
             case DrawError:
               ++userScore
               ++compScore
-              return play(userPlay).then(resolve, reject)
+              break
+
+            default:
+              return reject(err)
           }
 
-          console.log('WTF', err)
-          throw new Error('WTH')
+          play(userPlay).then(resolve, reject)
         })
-
-        // catch error
-        //  > No Overall Winner error
-        //  > Draw error
-        //  > Unexpected error
       }))
 
     })

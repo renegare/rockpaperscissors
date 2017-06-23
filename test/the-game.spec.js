@@ -139,4 +139,57 @@ describe('the game', () => {
         })
       })
   })
+
+  describe('unexpected errors should halt the game', () => {
+    it('should halt when user play throws an error', () => {
+      const { computerPlay, decideWinner } = stubs
+      const unexpectedError = new Error('Unexpected')
+      const play = stub().throws(unexpectedError)
+
+      const start = game()
+      return start(play).catch(err => {
+        expect(err).to.eql(unexpectedError)
+      })
+    })
+
+    it('should halt when computer play throws an error', () => {
+      const { computerPlay, decideWinner } = stubs
+      const unexpectedError = new Error('Unexpected')
+      const play = stub().callsArgWith(0, PAPER)
+      computerPlay.throws(unexpectedError)
+
+      const start = game()
+      return start(play).catch(err => {
+        expect(err).to.eql(unexpectedError)
+      })
+    })
+
+    it('should halt when referee check throws an error', () => {
+      const { computerPlay, decideWinner } = stubs
+      const unexpectedError = new Error('Unexpected')
+      const play = stub().callsArgWith(0, PAPER)
+      computerPlay.callsArgWith(0, ROCK)
+
+      decideWinner.throws(unexpectedError)
+
+      const start = game()
+      return start(play).catch(err => {
+        expect(err).to.eql(unexpectedError)
+      })
+    })
+
+    it('should halt when referee check rejects with an unexpected error', () => {
+      const { computerPlay, decideWinner } = stubs
+      const unexpectedError = new Error('Unexpected')
+      const play = stub().callsArgWith(0, PAPER)
+      computerPlay.callsArgWith(0, ROCK)
+
+      decideWinner.returns(Promise.reject(unexpectedError))
+
+      const start = game()
+      return start(play).catch(err => {
+        expect(err).to.eql(unexpectedError)
+      })
+    })
+  })
 })
