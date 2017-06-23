@@ -1,4 +1,4 @@
-class Computer {
+export default class Computer {
   constructor(possibleOptions) {
     this.possibleOptions = possibleOptions
   }
@@ -8,5 +8,3 @@ class Computer {
     setChoice(this.possibleOptions[idx])
   }
 }
-
-module.exports = Computer

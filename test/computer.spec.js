@@ -23,6 +23,7 @@ describe('the computer', () => {
   it.only('should return a random choice', done => {
     const possibleOptions = [ 1, 2, 3 ]
     const computer = new Computer(possibleOptions)
+
     random.returns(0.5)
     floor.returns(2)
 
