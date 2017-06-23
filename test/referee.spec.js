@@ -5,12 +5,12 @@ const PAPER = 'PAPER'
 const SCISSORS = 'SCISSORS'
 const choices = [ ROCK, PAPER, SCISSORS ]
 
-describe.only('Referee', () => {
+describe('Referee', () => {
 
   it('should resolve winner as USER', () => {
     const referee = new Referee({ choices })
 
-    return referee.decideWinner(ROCK, SCISSORS)
+    return referee.getPlayResult(ROCK, SCISSORS)
     .then(winner => {
       expect(winner).to.eql(USER)
     })
@@ -21,7 +21,7 @@ describe.only('Referee', () => {
       choices
     })
 
-    return referee.decideWinner(PAPER, SCISSORS)
+    return referee.getPlayResult(PAPER, SCISSORS)
     .then(winner => {
       expect(winner).to.eql(COMPUTER)
     })
@@ -30,7 +30,7 @@ describe.only('Referee', () => {
   it('should reject play as a draw', () => {
     const referee = new Referee({ choices })
 
-    return referee.decideWinner(SCISSORS, SCISSORS)
+    return referee.getPlayResult(SCISSORS, SCISSORS)
     .catch(err => {
       expect(err).instanceof(DrawError)
     })

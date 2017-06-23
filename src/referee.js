@@ -14,6 +14,12 @@ export class DrawError extends ExtendableError {
 }
 
 /**
+ * When a user plays an invalid choice
+ * @type InvalidChoiceError
+ */
+export class InvalidChoiceError extends ExtendableError {}
+
+/**
  * The decider of a given play
  * @type Referee
  */
@@ -35,8 +41,9 @@ export default class Referee {
    * @return {Promise}
    * @resolve {string} one of the constants USER or COMPUTER
    * @rejects {DrawError} when both user and computer choices match
+   * @rejects !{InvalidChoiceError} when both user and computer choices match
    */
-  decideWinner(user, comp) {
+  getPlayResult(user, comp) {
     return new Promise((resolve, reject) => {
       if(user === comp) return reject(new DrawError())
 
@@ -53,5 +60,13 @@ export default class Referee {
 
       resolve(winners.indexOf(comp) > -1 ? COMPUTER : USER)
     })
+  }
+
+  /**
+   * based on the current state of play decide if there is a winner or if they should play on
+   * @return {[type]} [description]
+   */
+  getWinner() {
+
   }
 }

@@ -1,28 +1,31 @@
 import ExtendableError from 'es6-error';
 
 import Computer from './computer'
-import Referee from './referee'
+import Referee, {
+  USER,
+  COMPUTER,
+  DrawError,
+  InvalidChoiceError,
+} from './referee'
 
 export const ROCK = 'ROCK'
 export const PAPER = 'PAPER'
 export const SCISSORS = 'SCISSORS'
-export const COMPUTER = 'COMPUTER'
-export const USER = 'USER'
+
+export {
+  COMPUTER,
+  USER,
+  DrawError
+} from './referee'
 
 export const defaultOpts = {
   possibleOptions: [ ROCK, PAPER, SCISSORS ]
 }
 
-export class NoOverallWinnerError extends ExtendableError {
+export class NoWinnerError extends ExtendableError {
   constructor(winner, message='NoOverall Winner Error') {
     super(message)
     this.winner = winner
-  }
-}
-
-export class DrawError extends ExtendableError {
-  constructor(message='Draw Error') {
-    super(message)
   }
 }
 
@@ -31,54 +34,39 @@ export const game = (opts = {}) => {
     possibleOptions
   } = { ...defaultOpts, ...opts }
 
-  let userScore = 0
-  let compScore = 0
+  let user = 0
+  let comp = 0
   let plays = 0
 
   const computer = new Computer(possibleOptions)
+  const referee = new Referee({
+    choices: possibleOptions
+  })
 
   const play = (userPlay) => {
-    ++plays
     return new Promise((resolve, reject) => {
       userPlay(userChoice => computer.play(compChoice => {
-        Referee.decideWinner({
-          plays,
-          possibleOptions,
-          userScore,
-          compScore,
-          userChoice,
-          compChoice
+        ++plays
+        referee.getPlayResult(userChoice, compChoice)
+        .catch(err => {
+          if (err.constructor !== DrawError) throw err
         })
         .then(winner => {
           if(winner === USER)
-            ++userScore
-          else
-            ++compScore
-
-          resolve({
-            plays,
-            userScore,
-            compScore,
-            winner
-          })
+            ++user
+          else if (winner === COMPUTER)
+            ++comp
         })
+        .then(() => referee.getWinner(plays, user, comp))
+        .then(winner => resolve({
+          plays,
+          user,
+          comp,
+          winner
+        }))
         .catch(err => {
-          switch(err.constructor) {
-            case NoOverallWinnerError:
-              if (err.winner === USER)
-                ++userScore
-              else
-                ++compScore
-              break
-
-            case DrawError:
-              ++userScore
-              ++compScore
-              break
-
-            default:
-              return reject(err)
-          }
+          if (err.constructor !== NoWinnerError)
+            return reject(err)
 
           play(userPlay).then(resolve, reject)
         })
