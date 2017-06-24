@@ -1,4 +1,4 @@
-import Computer from '../src/computer'
+import Computer from '../src/js/computer'
 import { stub } from 'sinon'
 
 describe('the computer', () => {

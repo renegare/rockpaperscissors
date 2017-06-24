@@ -4,7 +4,7 @@ import Referee, {
   DrawError,
   NoWinnerError,
   InvalidChoiceError
-} from '../src/referee'
+} from '../src/js/referee'
 
 const ROCK = 'ROCK'
 const PAPER = 'PAPER'

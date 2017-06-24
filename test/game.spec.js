@@ -1,6 +1,6 @@
 import { stub } from 'sinon'
-import Computer from '../src/computer'
-import Referee from '../src/referee'
+import Computer from '../src/js/computer'
+import Referee from '../src/js/referee'
 import {
   game,
 
@@ -12,7 +12,7 @@ import {
 
   NoWinnerError,
   DrawError,
-} from '../src/game'
+} from '../src/js/game'
 
 describe('the game', () => {
   let computerPlay
