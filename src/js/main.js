@@ -1,6 +1,15 @@
 require('../css/main.scss');
 
-import print from './module';
+import React from 'react';
+import { render } from 'react-dom'
+import GameUI from './components/game-ui'
+
+
+render(
+  <GameUI />,
+  document.querySelector('#game')
+)
+
 
 // on document ready
 
