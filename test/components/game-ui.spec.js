@@ -2,27 +2,26 @@ import React, { Component } from 'react'
 import { shallow } from 'enzyme'
 import { stub } from 'sinon'
 
-import GameUI from '../src/js/components/game-ui'
-import StartScreen from '../src/js/components/start-screen'
+import GameUI from '../../src/js/components/game-ui'
+import StartScreen from '../../src/js/components/start-screen'
+import GameScreen from '../../src/js/components/game-screen'
+import DemoGameScreen from '../../src/js/components/demo-game-screen'
 
 describe.only('Game UI', () => {
-
   it('should display start game option and demo option', () => {
     const wrapper = shallow(<GameUI />)
     expect(wrapper.find(StartScreen)).to.length(1)
   })
 
   it('should start game', () => {
-    const onStartGameStub = stub()
-    const wrapper = shallow(<GameUI onStartGame={onStartGameStub} />)
+    const wrapper = shallow(<GameUI />)
     wrapper.find(StartScreen).first().prop('onStartGame')()
-    expect(onStartGameStub.calledOnce).to.be.true
+    expect(wrapper.find(GameScreen)).to.length(1)
   })
 
   it('should start demo', () => {
-    const onDemoGameStub = stub()
-    const wrapper = shallow(<GameUI onDemoGame={onDemoGameStub} />)
+    const wrapper = shallow(<GameUI />)
     wrapper.find(StartScreen).first().prop('onDemoGame')()
-    expect(onDemoGameStub.calledOnce).to.be.true
+    expect(wrapper.find(DemoGameScreen)).to.length(1)
   })
 })
