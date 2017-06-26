@@ -17,12 +17,7 @@ export default class GameScreen extends Component {
     this.state = {
       game,
       play: null,
-      score: {
-        user: 0,
-        comp: 0,
-        bestOutOf: 3,
-        plays: 0
-      }
+      score: game.getScore() || {}
     }
   }
 

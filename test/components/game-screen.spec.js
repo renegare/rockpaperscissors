@@ -15,18 +15,20 @@ describe.only('Game Screen', () => {
   let getOptions
   let create
   let registerListener
+  let getScore
 
   before(() => {
     create = stub(Game, 'create')
     getOptions = stub(Game.prototype, 'getOptions')
     registerListener = stub(Game.prototype, 'on')
+    getScore = stub(Game.prototype, 'getScore')
   })
 
   beforeEach(() => {
     create.reset()
     getOptions.reset()
     registerListener.reset()
-
+    getScore.reset()
     create.callsFake((...args) => new Game(...args))
   })
 
@@ -34,6 +36,7 @@ describe.only('Game Screen', () => {
     create.restore()
     getOptions.restore()
     registerListener.restore()
+    getScore.reset()
   })
 
   it('should display options to choose from', () => {
@@ -57,7 +60,7 @@ describe.only('Game Screen', () => {
     expect(options).to.eql(expectedOptions)
   })
 
-  it('should disable options after user has made a selection', done => {
+  it('should hide options after user has made a selection', done => {
     const expectedOptions = [ 'ROCK', 'PAPER', 'SCISSORS' ]
     getOptions.returns(expectedOptions)
 
@@ -79,12 +82,19 @@ describe.only('Game Screen', () => {
   })
 
   it('should listen for score updates', () => {
+    getScore.returns({
+      user: 0,
+      comp: 0,
+      bestOutOf: 3,
+      plays: []
+    })
+
     const wrapper = shallow(<GameScreen />)
     expect(wrapper.find(Score).find({
       user: 0,
       comp: 0,
       bestOutOf: 3,
-      plays: 0
+      plays: []
     })).to.length(1)
 
     const listener = findAndVerifyEventListener(registerListener, 'score')
@@ -92,7 +102,7 @@ describe.only('Game Screen', () => {
     listener({
       user: 200,
       comp: 10,
-      plays:4,
+      plays: ['...', '...', '...'],
       bestOutOf:3
     })
 
@@ -102,7 +112,7 @@ describe.only('Game Screen', () => {
       user: 200,
       comp: 10,
       bestOutOf: 3,
-      plays: 4
+      plays: ['...', '...', '...']
     })).to.length(1)
   })
 

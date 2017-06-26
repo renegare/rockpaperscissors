@@ -37,6 +37,13 @@ export default class Game {
   on() {
     throw new Error('Not Implemented')
   }
+
+  /**
+   * get the current score of the game
+   */
+  getScore() {
+    throw new Error('Not Implemented')
+  }
 }
 
 // easier to use (aka test code) ;)
