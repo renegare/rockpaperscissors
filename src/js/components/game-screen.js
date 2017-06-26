@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
 import Game from '../game'
-
-export const Score = () => (
-  <aside>Score: 0/0</aside>
-)
+import Score from './score'
 
 export default class GameScreen extends Component {
   constructor() {

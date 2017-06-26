@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { shallow } from 'enzyme'
 import { stub } from 'sinon'
-import GameScreen, { Score } from '../../src/js/components/game-screen'
+import GameScreen from '../../src/js/components/game-screen'
+import Score from '../../src/js/components/score'
 import Game from '../../src/js/game'
 
 const findAndVerifyEventListener = (registerStub, name) => {
