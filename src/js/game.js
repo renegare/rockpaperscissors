@@ -22,6 +22,10 @@ export const defaultOpts = {
   possibleOptions: [ ROCK, PAPER, SCISSORS ]
 }
 
+export default class Game {
+
+}
+
 export const game = (opts = {}) => {
   const {
     possibleOptions
