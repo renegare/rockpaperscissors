@@ -6,13 +6,14 @@ export default class GameScreen extends Component {
     super()
 
     this.state = {
-      game: Game.create(play => this.handlePlay(play)),
+      game: Game.create(play => this.setState({ play })),
       play: null
     }
   }
 
-  handlePlay(play) {
-    this.setState({ play })
+  handleSelection(selection) {
+    this.state.play(selection)
+    this.setState({ play: null })
   }
 
   renderOptions() {
@@ -26,7 +27,7 @@ export default class GameScreen extends Component {
     return (
       <div>
         {game.getOptions().map((o, n) => (
-          <button key={n}>{o}</button>
+          <button key={n} onClick={() => this.handleSelection(o)}>{o}</button>
         ))}
       </div>
     )
