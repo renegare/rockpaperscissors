@@ -6,7 +6,8 @@ export default class GameScreen extends Component {
     super()
 
     this.state = {
-      game: Game.create(play => this.handlePlay(play))
+      game: Game.create(play => this.handlePlay(play)),
+      play: null
     }
   }
 
@@ -15,12 +16,20 @@ export default class GameScreen extends Component {
   }
 
   renderOptions() {
-    return null;
-    // <div>
-    //   {game.getOptions().map((o, n) => (
-    //     <button key={n}>{o}</button>
-    //   ))}
-    // </div>
+    const {
+      play,
+      game
+    } = this.state
+
+    if(!this.state.play) return null;
+
+    return (
+      <div>
+        {game.getOptions().map((o, n) => (
+          <button key={n}>{o}</button>
+        ))}
+      </div>
+    )
   }
 
   render() {
