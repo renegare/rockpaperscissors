@@ -4,6 +4,13 @@ import { stub } from 'sinon'
 import GameScreen, { Score } from '../../src/js/components/game-screen'
 import Game from '../../src/js/game'
 
+const findAndVerifyEventListener = (registerStub, name) => {
+    expect(registerStub.callCount).least(1)
+    const { args: [ , listener ] } = registerStub.getCalls()
+      .find(({ args: [ event ] }) => event === name )
+    return listener
+}
+
 describe.only('Game Screen', () => {
   let getOptions
   let create
@@ -63,7 +70,7 @@ describe.only('Game Screen', () => {
       setTimeout(() => {
         expect(wrapper.find('button')).length(0)
         done()
-      })
+      }, 0)
     })
 
     const buttons = wrapper.find('button')
@@ -71,7 +78,7 @@ describe.only('Game Screen', () => {
     buttons.at(1).simulate('click')
   })
 
-  it('should listen for score updates', done => {
+  it('should listen for score updates', () => {
     const wrapper = shallow(<GameScreen />)
     expect(wrapper.find(Score).find({
       user: 0,
@@ -80,10 +87,8 @@ describe.only('Game Screen', () => {
       plays: 0
     })).to.length(1)
 
-    expect(registerListener.calledOnce).to.be.true
-    expect(registerListener.firstCall.args[0]).to.eql('score')
+    const listener = findAndVerifyEventListener(registerListener, 'score')
 
-    const listener = registerListener.firstCall.args[1]
     listener({
       user: 200,
       comp: 10,
@@ -91,17 +96,31 @@ describe.only('Game Screen', () => {
       bestOutOf:3
     })
 
-    setTimeout(() => {
-      expect(wrapper.find(Score).find({
-        user: 200,
-        comp: 10,
-        bestOutOf: 3,
-        plays: 4
-      })).to.length(1)
-      done()
-    })
+    wrapper.update()
+
+    expect(wrapper.find(Score).find({
+      user: 200,
+      comp: 10,
+      bestOutOf: 3,
+      plays: 4
+    })).to.length(1)
   })
 
-  it('should trigger onEndGame when game has completed')
-  it('should trigger onError when game has and error')
+  it('should trigger onEnd when game has completed', () => {
+    const onEndStub = stub()
+    const wrapper = shallow(<GameScreen onEnd={onEndStub} />)
+    const listener = findAndVerifyEventListener(registerListener, 'end')
+    expect(listener).instanceof(Function)
+    listener()
+    expect(onEndStub.calledOnce).to.be.true
+  })
+
+  it('should trigger onError when game has and error', () => {
+    const onErrorStub = stub()
+    const wrapper = shallow(<GameScreen onError={onErrorStub} />)
+    const listener = findAndVerifyEventListener(registerListener, 'error')
+    expect(listener).instanceof(Function)
+    listener()
+    expect(onErrorStub.calledOnce).to.be.true
+  })
 })

@@ -11,6 +11,8 @@ export default class GameScreen extends Component {
 
     const game = Game.create(play => this.setState({ play }))
     game.on('score', score => this.setState({ score }))
+    game.on('end', () => this.props.onEnd())
+    game.on('error', () => this.props.onError())
 
     this.state = {
       game,
