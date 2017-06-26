@@ -101,4 +101,7 @@ describe.only('Game Screen', () => {
       done()
     })
   })
+
+  it('should trigger onEndGame when game has completed')
+  it('should trigger onError when game has and error')
 })
