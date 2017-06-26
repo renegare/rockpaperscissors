@@ -92,7 +92,6 @@ describe.only('Game Screen', () => {
     })
 
     setTimeout(() => {
-      console.log(wrapper.find(Score).props())
       expect(wrapper.find(Score).find({
         user: 200,
         comp: 10,
