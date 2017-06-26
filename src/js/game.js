@@ -23,12 +23,23 @@ export const defaultOpts = {
 }
 
 export default class Game {
-
+  /**
+   * get a list of available options ... elegant ...
+   * should change
+   */
   getOptions() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * register event listners for score, end or error!
+   */
+  on() {
     throw new Error('Not Implemented')
   }
 }
 
+// easier to use (aka test code) ;)
 Game.create = () => {
   throw new Error('Not Implemented')
 }

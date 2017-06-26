@@ -1,21 +1,24 @@
 import React, { Component } from 'react'
 import { shallow } from 'enzyme'
 import { stub } from 'sinon'
-import GameScreen from '../../src/js/components/game-screen'
+import GameScreen, { Score } from '../../src/js/components/game-screen'
 import Game from '../../src/js/game'
 
 describe.only('Game Screen', () => {
   let getOptions
   let create
+  let registerListener
 
   before(() => {
     create = stub(Game, 'create')
     getOptions = stub(Game.prototype, 'getOptions')
+    registerListener = stub(Game.prototype, 'on')
   })
 
   beforeEach(() => {
     create.reset()
     getOptions.reset()
+    registerListener.reset()
 
     create.callsFake((...args) => new Game(...args))
   })
@@ -23,6 +26,7 @@ describe.only('Game Screen', () => {
   after(() => {
     create.restore()
     getOptions.restore()
+    registerListener.restore()
   })
 
   it('should display options to choose from', () => {
@@ -49,7 +53,6 @@ describe.only('Game Screen', () => {
   it('should disable options after user has made a selection', done => {
     const expectedOptions = [ 'ROCK', 'PAPER', 'SCISSORS' ]
     getOptions.returns(expectedOptions)
-    create.callsFake((...args) => new Game(...args))
 
     const wrapper = shallow(<GameScreen />)
     expect(wrapper.find('button')).to.length(0)
@@ -66,5 +69,26 @@ describe.only('Game Screen', () => {
     const buttons = wrapper.find('button')
     expect(buttons).length(3)
     buttons.at(1).simulate('click')
+  })
+
+  it.only('should listen for and display score updates', () => {
+    const wrapper = shallow(<GameScreen />)
+    expect(wrapper.find(Score).find({
+      user: 0,
+      comp: 0,
+      bestOutof: 3,
+      plays: 2
+    })).to.length(1)
+
+    expect(registerListener.calledOnce).to.be.true
+    expect(registerListener.firstCall.args[0]).to.eql('score')
+
+    const listener = registerListener.firstCall.args[1]
+    listener({
+      user: 200,
+      comp: 10,
+      plays:4,
+      bestOutOf:3
+    })
   })
 })
