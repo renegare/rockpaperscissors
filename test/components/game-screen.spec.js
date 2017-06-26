@@ -12,7 +12,7 @@ const findAndVerifyEventListener = (registerStub, name) => {
     return listener
 }
 
-describe.only('Game Screen', () => {
+describe('<GameScreen />', () => {
   let getOptions
   let create
   let registerListener

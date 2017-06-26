@@ -4,7 +4,7 @@ import { stub } from 'sinon'
 
 import StartScreen from '../../src/js/components/start-screen'
 
-describe.only('Start Screen', () => {
+describe('Start Screen', () => {
   it('should display start game option', () => {
     const onStartGame = stub()
     const wrapper = shallow(<StartScreen onStartGame={onStartGame}/>)

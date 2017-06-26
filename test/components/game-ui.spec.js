@@ -7,7 +7,7 @@ import StartScreen from '../../src/js/components/start-screen'
 import GameScreen from '../../src/js/components/game-screen'
 import DemoGameScreen from '../../src/js/components/demo-game-screen'
 
-describe.only('Game UI', () => {
+describe('Game UI', () => {
   it('should display start game option and demo option', () => {
     const wrapper = shallow(<GameUI />)
     expect(wrapper.find(StartScreen)).to.length(1)
