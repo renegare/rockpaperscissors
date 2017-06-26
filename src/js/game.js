@@ -24,6 +24,9 @@ export const defaultOpts = {
 
 export default class Game {
 
+  getOptions() {
+    throw new Error('Not Implemented')
+  }
 }
 
 export const game = (opts = {}) => {
