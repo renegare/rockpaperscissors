@@ -32,7 +32,7 @@ describe('the computer', () => {
 
       expect(random.calledOnce).to.be.true
       expect(floor.calledOnce).to.be.true
-
+      expect(floor.firstCall.args[0]).to.eql(0.5 * possibleOptions.length)
       done()
     })
   })
