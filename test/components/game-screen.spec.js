@@ -71,13 +71,13 @@ describe.only('Game Screen', () => {
     buttons.at(1).simulate('click')
   })
 
-  it.only('should listen for and display score updates', () => {
+  it('should listen for score updates', done => {
     const wrapper = shallow(<GameScreen />)
     expect(wrapper.find(Score).find({
       user: 0,
       comp: 0,
-      bestOutof: 3,
-      plays: 2
+      bestOutOf: 3,
+      plays: 0
     })).to.length(1)
 
     expect(registerListener.calledOnce).to.be.true
@@ -89,6 +89,17 @@ describe.only('Game Screen', () => {
       comp: 10,
       plays:4,
       bestOutOf:3
+    })
+
+    setTimeout(() => {
+      console.log(wrapper.find(Score).props())
+      expect(wrapper.find(Score).find({
+        user: 200,
+        comp: 10,
+        bestOutOf: 3,
+        plays: 4
+      })).to.length(1)
+      done()
     })
   })
 })

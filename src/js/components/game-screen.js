@@ -10,13 +10,17 @@ export default class GameScreen extends Component {
     super()
 
     const game = Game.create(play => this.setState({ play }))
-    game.on('score', () => {
-
-    })
+    game.on('score', score => this.setState({ score }))
 
     this.state = {
       game,
-      play: null
+      play: null,
+      score: {
+        user: 0,
+        comp: 0,
+        bestOutOf: 3,
+        plays: 0
+      }
     }
   }
 
@@ -45,7 +49,10 @@ export default class GameScreen extends Component {
   render() {
     const {
       game,
-      play
+      play,
+      score: {
+        user, comp, bestOutOf, plays
+      }
     } = this.state
 
     return (
@@ -53,10 +60,10 @@ export default class GameScreen extends Component {
         <h2>Game Screen</h2>
 
         <Score
-          user={0}
-          comp={0}
-          bestOutof={3}
-          plays={2}
+          user={user}
+          comp={comp}
+          bestOutOf={bestOutOf}
+          plays={plays}
         />
 
         {this.renderOptions()}
