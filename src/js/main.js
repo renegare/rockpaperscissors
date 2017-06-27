@@ -2,11 +2,10 @@ require('../css/main.scss');
 
 import React from 'react';
 import { render } from 'react-dom'
-import GameUI from './components/game-ui'
 
 
 render(
-  <GameUI />,
+  <h1>Hello Mud</h1>,
   document.querySelector('#game')
 )
 
